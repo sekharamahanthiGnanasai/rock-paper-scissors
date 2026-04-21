@@ -1,90 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Rock Paper Scissors</title>
+<meta charset="UTF-8">
+<title>Rock Paper Scissors</title>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: #f4f4f4;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
-    h1 {
-      margin-top: 20px;
-    }
+.container {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  width: 350px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
 
-    .choices img {
-      width: 120px;
-      height: 120px;
-      margin: 15px;
-      cursor: pointer;
-      border-radius: 10px;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
+h1 {
+  margin-bottom: 10px;
+}
 
-    .choices img:hover {
-      transform: scale(1.1);
-      box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
-    }
+.score {
+  margin: 10px 0;
+  font-weight: bold;
+}
 
-    .result {
-      margin-top: 30px;
-      font-size: 20px;
-    }
+.choices {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
 
-    .score {
-      margin-top: 15px;
-      font-size: 18px;
-    }
-  </style>
+.choice {
+  cursor: pointer;
+  border-radius: 15px;
+  padding: 10px;
+  transition: 0.3s;
+}
+
+.choice img {
+  width: 80px;
+  height: 80px;
+}
+
+.choice:hover {
+  transform: scale(1.1);
+  background: #f0f0f0;
+}
+
+.selected {
+  border: 3px solid #667eea;
+}
+
+.result {
+  margin-top: 15px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.computer-choice img {
+  width: 70px;
+  margin-top: 10px;
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  background: #667eea;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #5a67d8;
+}
+</style>
 </head>
 
 <body>
 
-  <h1>Rock Paper Scissors</h1>
+<div class="container">
+  <h1>🎮 RPS Game</h1>
 
-  <div class="choices">
-    <img src="rock.jpeg" alt="Rock" onclick="playGame('rock')">
-    <img src="paper.jpeg" alt="Paper" onclick="playGame('paper')">
-    <img src="scissors.jpeg" alt="Scissors" onclick="playGame('scissors')">
-  </div>
-
-  <div class="result" id="result">Choose your move!</div>
   <div class="score" id="score">You: 0 | Computer: 0</div>
 
-  <script>
-    let userScore = 0;
-    let computerScore = 0;
+  <div class="choices">
+    <div class="choice" onclick="playGame('rock', this)">
+      <img src="rock.jpeg">
+    </div>
+    <div class="choice" onclick="playGame('paper', this)">
+      <img src="paper.jpeg">
+    </div>
+    <div class="choice" onclick="playGame('scissors', this)">
+      <img src="scissors.jpeg">
+    </div>
+  </div>
 
-    function playGame(userChoice) {
-      const choices = ['rock', 'paper', 'scissors'];
-      const computerChoice = choices[Math.floor(Math.random() * 3)];
+  <div class="result" id="result">Choose your move</div>
 
-      let result = '';
+  <div class="computer-choice" id="computerChoice"></div>
 
-      if (userChoice === computerChoice) {
-        result = "It's a draw!";
-      } else if (
-        (userChoice === 'rock' && computerChoice === 'scissors') ||
-        (userChoice === 'paper' && computerChoice === 'rock') ||
-        (userChoice === 'scissors' && computerChoice === 'paper')
-      ) {
-        result = "You win!";
-        userScore++;
-      } else {
-        result = "Computer wins!";
-        computerScore++;
-      }
+  <button onclick="resetGame()">Reset</button>
+</div>
 
-      document.getElementById('result').innerText =
-        `You chose ${userChoice}, Computer chose ${computerChoice}. ${result}`;
+<script>
+let userScore = 0;
+let computerScore = 0;
 
-      document.getElementById('score').innerText =
-        `You: ${userScore} | Computer: ${computerScore}`;
-    }
-  </script>
+function playGame(userChoice, element) {
+  const choices = ['rock', 'paper', 'scissors'];
+  const computerChoice = choices[Math.floor(Math.random() * 3)];
+
+  // Remove previous selection
+  document.querySelectorAll('.choice').forEach(c => c.classList.remove('selected'));
+  element.classList.add('selected');
+
+  let result = '';
+
+  if (userChoice === computerChoice) {
+    result = "It's a Draw!";
+  } else if (
+    (userChoice === 'rock' && computerChoice === 'scissors') ||
+    (userChoice === 'paper' && computerChoice === 'rock') ||
+    (userChoice === 'scissors' && computerChoice === 'paper')
+  ) {
+    result = "You Win!";
+    userScore++;
+  } else {
+    result = "Computer Wins!";
+    computerScore++;
+  }
+
+  document.getElementById('result').innerText =
+    `${result}`;
+
+  document.getElementById('score').innerText =
+    `You: ${userScore} | Computer: ${computerScore}`;
+
+  document.getElementById('computerChoice').innerHTML =
+    `<p>Computer chose:</p><img src="${computerChoice}.jpeg">`;
+}
+
+function resetGame() {
+  userScore = 0;
+  computerScore = 0;
+  document.getElementById('score').innerText = `You: 0 | Computer: 0`;
+  document.getElementById('result').innerText = "Choose your move";
+  document.getElementById('computerChoice').innerHTML = "";
+  document.querySelectorAll('.choice').forEach(c => c.classList.remove('selected'));
+}
+</script>
 
 </body>
 </html>
